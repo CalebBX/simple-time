@@ -1,100 +1,70 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
+import { Route, Link, Redirect } from 'react-router-dom';
+import api from '../api';
 
-import {
-    Button,
-    Container,
-    Divider,
-    Grid,
-    Header,
-    Icon,
-    Image,
-    List,
-    Menu,
-    Responsive,
-    Segment,
-    Sidebar,
-    Visibility
-} from 'semantic-ui-react';
+import { Container, Icon, Menu } from 'semantic-ui-react';
 
-import TimeClock from './TimeClock';
+import PlaceholderContent from './PlaceholderContent';
+import EmployeeList from './EmployeeList';
+import EmployeeOverview from './EmployeeOverview';
+import Login from './Login';
 
 class App extends React.Component {
-    state = { visible: false };
-
-    handleHideClick = () => this.setState({ visible: false });
-    handleShowClick = () => this.setState({ visible: true });
-    handleSidebarHide = () => this.setState({ visible: false });
-
     render() {
-        const { visible } = this.state;
+        if (!sessionStorage.token) {
+            if (window.location.pathname !== '/login') {
+                return <Redirect to="/login" />;
+            }
+            return <Route path="/login" component={Login} />;
+        }
         return (
             <div>
-                <Sidebar.Pushable as={Segment}>
-                    <Router>
-                        <Sidebar
-                            as={Menu}
-                            animation="overlay"
-                            icon="labeled"
-                            inverted
-                            onHide={this.handleSidebarHide}
-                            vertical
-                            visible={visible}
-                            width="thin"
-                        >
-                            <Menu.Item as="a">
-                                <Icon name="home" />
-                                Dashboard
-                            </Menu.Item>
-                            <Menu.Item as="a">
-                                <Icon name="users" />
-                                Employees
-                            </Menu.Item>
-                            <Menu.Item as="a">
-                                <Icon name="calendar" />
-                                Calendar
-                            </Menu.Item>
-                        </Sidebar>
-                    </Router>
+                <Menu inverted={true}>
+                    <Menu.Item as={Link} to="/">
+                        <Icon name="home" />
+                        Dashboard
+                    </Menu.Item>
+                    <Menu.Item as={Link} to="/employees">
+                        <Icon name="users" />
+                        Employees
+                    </Menu.Item>
 
-                    <Sidebar.Pusher dimmed={visible}>
-                        <Menu inverted top>
-                            <Menu.Item onClick={this.handleShowClick}>
-                                <Icon name="bars" />
-                            </Menu.Item>
-                        </Menu>
-                        <Container>
-                            <Segment basic>
-                                <Header as="h3">Application Content</Header>
-                                <Image src="https://react.semantic-ui.com/images/wireframe/paragraph.png" />
-                            </Segment>
-                            <Segment basic>
-                                <Image src="https://react.semantic-ui.com/images/wireframe/paragraph.png" />
-                            </Segment>
-                            <Segment basic>
-                                <Image src="https://react.semantic-ui.com/images/wireframe/paragraph.png" />
-                            </Segment>
-                            <Segment basic>
-                                <Image src="https://react.semantic-ui.com/images/wireframe/paragraph.png" />
-                            </Segment>
-                            <Segment basic>
-                                <Image src="https://react.semantic-ui.com/images/wireframe/paragraph.png" />
-                            </Segment>
-                            <Segment basic>
-                                <Image src="https://react.semantic-ui.com/images/wireframe/paragraph.png" />
-                            </Segment>
-                            <Segment basic>
-                                <Image src="https://react.semantic-ui.com/images/wireframe/paragraph.png" />
-                            </Segment>
-                            <Segment basic>
-                                <Image src="https://react.semantic-ui.com/images/wireframe/paragraph.png" />
-                            </Segment>
-                        </Container>
-                    </Sidebar.Pusher>
-                </Sidebar.Pushable>
+                    <Menu.Item as={Link} to="/placeholder">
+                        <Icon name="calendar" />
+                        test
+                    </Menu.Item>
+
+                    <Menu.Item as="a" onClick={this.logout}>
+                        <Icon name="calendar" />
+                        logout
+                    </Menu.Item>
+                </Menu>
+
+                <Container style={{ height: '100vh' }}>
+                    <Route path="/employees" component={EmployeeList} />
+                    <Route
+                        path="/employee_overview/:id"
+                        component={EmployeeOverview}
+                    />
+                    <Route path="/placeholder" component={PlaceholderContent} />
+                    <Route path="/" />
+                </Container>
             </div>
         );
     }
+
+    logout = () => {
+        var config = { headers: { 'x-auth': sessionStorage.token } };
+        api.delete('/users/logout', config)
+            .then(res => {
+                console.log('logged out');
+                sessionStorage.removeItem('token');
+                this.forceUpdate();
+            })
+            .catch(e => {
+                console.log(e);
+            });
+    };
 }
 
 export default App;

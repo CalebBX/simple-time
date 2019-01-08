@@ -1,5 +1,5 @@
 import React from 'react';
-import { Redirect } from 'react-router-dom';
+import { Redirect, Link } from 'react-router-dom';
 import api from '../api';
 import {
     Button,
@@ -10,7 +10,7 @@ import {
     Segment
 } from 'semantic-ui-react';
 
-class LoginForm extends React.Component {
+class Login extends React.Component {
     state = {
         email: '',
         password: '',
@@ -40,7 +40,7 @@ class LoginForm extends React.Component {
                                     iconPosition="left"
                                     placeholder="E-mail address"
                                     value={this.state.email}
-                                    onChange={e =>
+                                    onInput={e =>
                                         this.setState({ email: e.target.value })
                                     }
                                 />
@@ -51,20 +51,24 @@ class LoginForm extends React.Component {
                                     placeholder="Password"
                                     type="password"
                                     value={this.state.password}
-                                    onChange={e =>
+                                    onInput={e =>
                                         this.setState({
                                             password: e.target.value
                                         })
                                     }
                                 />
 
-                                <Button fluid size="large">
+                                <Button
+                                    onClick={this.onFormSubmit}
+                                    fluid
+                                    size="large"
+                                >
                                     Login
                                 </Button>
                             </Segment>
                         </Form>
                         <Message>
-                            New to us? <a>Sign Up</a>
+                            New to us? <Link to="/signup">Sign Up</Link>
                         </Message>
                     </Grid.Column>
                 </Grid>
@@ -78,8 +82,8 @@ class LoginForm extends React.Component {
             password: this.state.password
         })
             .then(res => {
-                this.setState({ loggedIn: true });
                 sessionStorage.token = res.headers['x-auth'];
+                this.setState({ loggedIn: true });
             })
             .catch(e => {
                 console.log('error logging in');
@@ -88,4 +92,4 @@ class LoginForm extends React.Component {
     };
 }
 
-export default LoginForm;
+export default Login;

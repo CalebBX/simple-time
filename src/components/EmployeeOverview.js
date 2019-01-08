@@ -7,7 +7,8 @@ import api from '../api';
 class EmployeeOverview extends React.Component {
     state = {
         employee: {},
-        time: []
+        time: [],
+        isLoading: false
     };
     componentDidMount() {
         this.getEmployee();

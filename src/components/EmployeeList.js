@@ -1,11 +1,19 @@
 import React from 'react';
-import { Header, Container, List, Image } from 'semantic-ui-react';
+import {
+    Header,
+    Container,
+    List,
+    Image,
+    Dimmer,
+    Loader
+} from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 import api from '../api';
 
 class EmployeeList extends React.Component {
     state = {
-        users: []
+        users: [],
+        isLoading: false
     };
     componentDidMount() {
         this.getItems();
@@ -30,6 +38,7 @@ class EmployeeList extends React.Component {
         });
         return (
             <Container>
+                <Loader active={this.state.isLoading}>Loading</Loader>
                 <Header as="h3">Employees</Header>
                 <List celled>{userList}</List>
             </Container>
@@ -37,10 +46,12 @@ class EmployeeList extends React.Component {
     }
 
     getItems = () => {
+        this.setState({ isLoading: true });
         var config = { headers: { 'x-auth': sessionStorage.token } };
         api.get('/users', config).then(res => {
             this.setState({ users: res.data });
             console.log(res);
+            this.setState({ isLoading: false });
         });
     };
 }

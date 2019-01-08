@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, Link, Redirect } from 'react-router-dom';
+import { Route, Link, Redirect, Switch } from 'react-router-dom';
 import api from '../api';
 
 import { Container, Icon, Menu } from 'semantic-ui-react';
@@ -8,14 +8,23 @@ import PlaceholderContent from './PlaceholderContent';
 import EmployeeList from './EmployeeList';
 import EmployeeOverview from './EmployeeOverview';
 import Login from './Login';
+import Signup from './Signup';
 
 class App extends React.Component {
     render() {
         if (!sessionStorage.token) {
-            if (window.location.pathname !== '/login') {
+            if (
+                window.location.pathname !== '/login' &&
+                window.location.pathname !== '/signup'
+            ) {
                 return <Redirect to="/login" />;
             }
-            return <Route path="/login" component={Login} />;
+            return (
+                <Switch>
+                    <Route path="/login" component={Login} />
+                    <Route path="/signup" component={Signup} />
+                </Switch>
+            );
         }
         return (
             <div>

@@ -2,6 +2,7 @@ import React from 'react';
 import { Redirect, Link } from 'react-router-dom';
 import api from '../api';
 
+import UILink from '@material-ui/core/Link';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -27,6 +28,7 @@ class Login extends React.Component {
             return <Redirect to="/" />;
         }
         return (
+
             <main className={classes.main}>
                 <CssBaseline />
                 <Paper className={classes.paper}>
@@ -75,7 +77,10 @@ class Login extends React.Component {
                         onClick={this.logIn}
                     >
                         Sign in
-                        </Button>
+                    </Button>
+                    <Typography className={classes.link}>
+                        New to us? <UILink component={Link} to="/signup">Sign Up</UILink>
+                    </Typography>
                 </Paper>
             </main>
         );
@@ -113,14 +118,17 @@ const styles = theme => ({
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme.spacing.unit * 3}px`,
+        padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme.spacing.unit * 2}px`,
     },
-    // form: {
-    //     width: '100%', // Fix IE 11 issue.
-    //     marginTop: theme.spacing.unit,
-    // },
     submit: {
         marginTop: theme.spacing.unit * 3,
+    },
+    link: {
+        marginTop: theme.spacing.unit * 2,
+    },
+    avatar: {
+        margin: theme.spacing.unit,
+        backgroundColor: theme.palette.secondary.main,
     },
 });
 

@@ -1,8 +1,30 @@
 import React from 'react';
-import { Header, Container, Button, Table } from 'semantic-ui-react';
 // import { Route, Link } from 'react-router-dom';
 import moment from 'moment';
 import api from '../api';
+
+import AppBar from '@material-ui/core/AppBar';
+import Button from '@material-ui/core/Button';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import Divider from '@material-ui/core/Divider';
+import Drawer from '@material-ui/core/Drawer';
+import Hidden from '@material-ui/core/Hidden';
+import IconButton from '@material-ui/core/IconButton';
+import Card from '@material-ui/core/Card';
+import CardActionArea from '@material-ui/core/CardActionArea';
+import CardContent from '@material-ui/core/CardContent';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import Icon from '@material-ui/core/Icon';
+import ListItemText from '@material-ui/core/ListItemText';
+import MenuIcon from '@material-ui/icons/Menu';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+import Avatar from '@material-ui/core/Avatar';
+import Grid from '@material-ui/core/Grid';
+import Paper from '@material-ui/core/Paper';
+import { withStyles } from '@material-ui/core/styles';
 
 class EmployeeOverview extends React.Component {
     state = {
@@ -16,45 +38,60 @@ class EmployeeOverview extends React.Component {
     }
     render() {
         var employee = this.state.employee;
+        const { classes } = this.props
 
-        var timeList = this.state.time.map(entry => {
-            return (
-                <Table.Row positive={entry.active} key={entry._id}>
-                    <Table.Cell>
-                        {moment(entry.clockIn).format('M/D/YY')}
-                    </Table.Cell>
-                    <Table.Cell>
-                        {moment(entry.clockIn).format('h:mm a')}
-                    </Table.Cell>
-                    <Table.Cell>
-                        {entry.clockOut
-                            ? moment(entry.clockOut).format('h:mm a')
-                            : 'Active'}
-                    </Table.Cell>
-                </Table.Row>
-            );
-        });
+
+
         return (
-            <Container>
-                <Header as="h2">
-                    {employee.nameFirst} {employee.nameLast}
-                </Header>
-                <Container>
-                    <p>Email: {employee.email}</p>
-                </Container>
-                <Button onClick={this.clockIn}>Clock In</Button>
-                <Button onClick={this.clockOut}>Clock Out</Button>
-                <Table singleLine selectable>
-                    <Table.Header>
-                        <Table.Row>
-                            <Table.HeaderCell>Date</Table.HeaderCell>
-                            <Table.HeaderCell>Clock In</Table.HeaderCell>
-                            <Table.HeaderCell>Clock Out</Table.HeaderCell>
-                        </Table.Row>
-                    </Table.Header>
-                    <Table.Body>{timeList}</Table.Body>
-                </Table>
-            </Container>
+            <List>
+                {this.state.time.map(entry => (
+                    <div>
+                        <ListItem className={classes.list} key={entry.id} button>
+                            <Grid container spacing={16} direction="row">
+                                <Grid item xs={3}>
+                                    <Typography>
+                                        {moment(entry.clockIn).format('M/D/YY')}
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={3}>
+                                    <Typography>
+                                        {moment(entry.clockIn).format('h:mm a')}
+                                    </Typography>
+
+                                </Grid>
+                                <Grid item xs={3}>
+                                    <Typography>
+                                        {entry.clockOut
+                                            ? moment(entry.clockOut).format('h:mm a')
+                                            : 'Active'}
+                                    </Typography>
+                                </Grid>
+                            </Grid>
+                        </ListItem>
+                        <Divider />
+                    </div>
+                ))}
+            </List>
+            // <Container>
+            //     <Header as="h2">
+            //         {employee.nameFirst} {employee.nameLast}
+            //     </Header>
+            //     <Container>
+            //         <p>Email: {employee.email}</p>
+            //     </Container>
+            //     <Button onClick={this.clockIn}>Clock In</Button>
+            //     <Button onClick={this.clockOut}>Clock Out</Button>
+            //     <Table singleLine selectable>
+            //         <Table.Header>
+            //             <Table.Row>
+            //                 <Table.HeaderCell>Date</Table.HeaderCell>
+            //                 <Table.HeaderCell>Clock In</Table.HeaderCell>
+            //                 <Table.HeaderCell>Clock Out</Table.HeaderCell>
+            //             </Table.Row>
+            //         </Table.Header>
+            //         <Table.Body>{timeList}</Table.Body>
+            //     </Table>
+            // </Container>
         );
     }
     getEmployee = () => {
@@ -86,4 +123,15 @@ class EmployeeOverview extends React.Component {
     };
 }
 
-export default EmployeeOverview;
+const styles = theme => ({
+    root: {
+        flexGrow: 1,
+    },
+    list: {
+        // width: '100%',
+        // maxWidth: 360,
+        backgroundColor: theme.palette.background.paper,
+    },
+});
+
+export default withStyles(styles)(EmployeeOverview);

@@ -6,6 +6,7 @@ import EmployeeList from './EmployeeList';
 import EmployeeOverview from './EmployeeOverview';
 import Login from './Login';
 import Signup from './Signup';
+import Placeholder from './PlaceholderContent'
 
 import AppBar from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
@@ -127,7 +128,7 @@ class App extends React.Component {
                         component={EmployeeOverview}
                     />
                     {/* <Route path="/placeholder" component={PlaceholderContent} /> */}
-                    <Route path="/" >
+                    <Route path="/placeholder" component={Placeholder}>
                     </Route>
 
                 </main>

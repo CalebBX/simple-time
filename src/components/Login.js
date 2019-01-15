@@ -1,14 +1,19 @@
 import React from 'react';
 import { Redirect, Link } from 'react-router-dom';
 import api from '../api';
-import {
-    Button,
-    Form,
-    Grid,
-    Header,
-    Message,
-    Segment
-} from 'semantic-ui-react';
+
+import Avatar from '@material-ui/core/Avatar';
+import Button from '@material-ui/core/Button';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import FormControl from '@material-ui/core/FormControl';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
+import Input from '@material-ui/core/Input';
+import InputLabel from '@material-ui/core/InputLabel';
+import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
+import withStyles from '@material-ui/core/styles/withStyles';
 
 class Login extends React.Component {
     state = {
@@ -17,65 +22,65 @@ class Login extends React.Component {
         loggedIn: false
     };
     render() {
+        const { classes } = this.props;
         if (this.state.loggedIn === true) {
             return <Redirect to="/" />;
         }
         return (
-            <div style={{ height: '100vh' }}>
-                <Grid
-                    textAlign="center"
-                    style={{ height: '100%' }}
-                    verticalAlign="middle"
-                >
-                    <Grid.Column style={{ maxWidth: 450 }}>
-                        <Header as="h2" textAlign="center">
-                            {/* <Image src="/logo.png" /> */}
-                            Log-in to your account
-                        </Header>
-                        <Form size="large" onSubmit={this.onFormSubmit}>
-                            <Segment stacked>
-                                <Form.Input
-                                    fluid
-                                    icon="user"
-                                    iconPosition="left"
-                                    placeholder="E-mail address"
-                                    value={this.state.email}
-                                    onInput={e =>
-                                        this.setState({ email: e.target.value })
-                                    }
-                                />
-                                <Form.Input
-                                    fluid
-                                    icon="lock"
-                                    iconPosition="left"
-                                    placeholder="Password"
-                                    type="password"
-                                    value={this.state.password}
-                                    onInput={e =>
-                                        this.setState({
-                                            password: e.target.value
-                                        })
-                                    }
-                                />
+            <main className={classes.main}>
+                <CssBaseline />
+                <Paper className={classes.paper}>
+                    <Avatar className={classes.avatar}>
+                        <LockOutlinedIcon />
+                    </Avatar>
+                    <Typography component="h1" variant="h5">
+                        Sign in
+                    </Typography>
+                    <FormControl margin="normal" required fullWidth>
+                        <InputLabel htmlFor="email">Email Address</InputLabel>
+                        <Input
+                            id="email"
+                            autoFocus
+                            value={this.state.email}
+                            onInput={e =>
+                                this.setState({
+                                    email: e.target.value
+                                })
+                            }
+                        />
+                    </FormControl>
+                    <FormControl margin="normal" required fullWidth>
+                        <InputLabel htmlFor="password">Password</InputLabel>
+                        <Input
+                            type="password"
+                            id="password"
+                            value={this.state.password}
+                            onInput={e =>
+                                this.setState({
+                                    password: e.target.value
+                                })
+                            }
 
-                                <Button
-                                    onClick={this.onFormSubmit}
-                                    fluid
-                                    size="large"
-                                >
-                                    Login
-                                </Button>
-                            </Segment>
-                        </Form>
-                        <Message>
-                            New to us? <Link to="/signup">Sign Up</Link>
-                        </Message>
-                    </Grid.Column>
-                </Grid>
-            </div>
+                        />
+                    </FormControl>
+                    <FormControlLabel
+                        control={<Checkbox value="remember" color="primary" />}
+                        label="Remember me"
+                    />
+                    <Button
+                        fullWidth
+                        variant="contained"
+                        color="primary"
+                        className={classes.submit}
+                        onClick={this.logIn}
+                    >
+                        Sign in
+                        </Button>
+                </Paper>
+            </main>
         );
     }
-    onFormSubmit = event => {
+    logIn = event => {
         event.preventDefault();
         api.post('/users/login', {
             email: this.state.email,
@@ -91,5 +96,32 @@ class Login extends React.Component {
             });
     };
 }
+const styles = theme => ({
+    main: {
+        width: 'auto',
+        display: 'block', // Fix IE 11 issue.
+        marginLeft: theme.spacing.unit * 3,
+        marginRight: theme.spacing.unit * 3,
+        [theme.breakpoints.up(400 + theme.spacing.unit * 3 * 2)]: {
+            width: 400,
+            marginLeft: 'auto',
+            marginRight: 'auto',
+        },
+    },
+    paper: {
+        marginTop: theme.spacing.unit * 8,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme.spacing.unit * 3}px`,
+    },
+    // form: {
+    //     width: '100%', // Fix IE 11 issue.
+    //     marginTop: theme.spacing.unit,
+    // },
+    submit: {
+        marginTop: theme.spacing.unit * 3,
+    },
+});
 
-export default Login;
+export default withStyles(styles)(Login);

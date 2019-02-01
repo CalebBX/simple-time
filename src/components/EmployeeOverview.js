@@ -26,6 +26,9 @@ import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import { withStyles } from '@material-ui/core/styles';
 
+
+import TimeList from './TimeList.js'
+
 class EmployeeOverview extends React.Component {
     state = {
         employee: {},
@@ -42,56 +45,19 @@ class EmployeeOverview extends React.Component {
 
 
 
-        return (
-            <List>
-                {this.state.time.map(entry => (
-                    <div>
-                        <ListItem className={classes.list} key={entry.id} button>
-                            <Grid container spacing={16} direction="row">
-                                <Grid item xs={3}>
-                                    <Typography>
-                                        {moment(entry.clockIn).format('M/D/YY')}
-                                    </Typography>
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <Typography>
-                                        {moment(entry.clockIn).format('h:mm a')}
-                                    </Typography>
 
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <Typography>
-                                        {entry.clockOut
-                                            ? moment(entry.clockOut).format('h:mm a')
-                                            : 'Active'}
-                                    </Typography>
-                                </Grid>
-                            </Grid>
-                        </ListItem>
-                        <Divider />
-                    </div>
-                ))}
-            </List>
-            // <Container>
-            //     <Header as="h2">
-            //         {employee.nameFirst} {employee.nameLast}
-            //     </Header>
-            //     <Container>
-            //         <p>Email: {employee.email}</p>
-            //     </Container>
-            //     <Button onClick={this.clockIn}>Clock In</Button>
-            //     <Button onClick={this.clockOut}>Clock Out</Button>
-            //     <Table singleLine selectable>
-            //         <Table.Header>
-            //             <Table.Row>
-            //                 <Table.HeaderCell>Date</Table.HeaderCell>
-            //                 <Table.HeaderCell>Clock In</Table.HeaderCell>
-            //                 <Table.HeaderCell>Clock Out</Table.HeaderCell>
-            //             </Table.Row>
-            //         </Table.Header>
-            //         <Table.Body>{timeList}</Table.Body>
-            //     </Table>
-            // </Container>
+        return (
+            <div>
+                <Typography variant="h3">
+                    {employee.nameFirst} {employee.nameLast}
+                </Typography>
+                <Typography variant="subtitle1">
+                    Email: {employee.email}
+                </Typography>
+
+                <TimeList time={this.state.time} />
+            </div>
+
         );
     }
     getEmployee = () => {

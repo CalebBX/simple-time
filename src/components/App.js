@@ -33,7 +33,7 @@ class App extends React.Component {
         this.setState({ drawerOpen: !this.state.drawerOpen })
     }
     logout = () => {
-        var config = { headers: { 'x-auth': sessionStorage.token } };
+        let config = { headers: { 'x-auth': sessionStorage.token } };
         api.delete('/users/logout', config)
             .then(res => {
                 console.log('logged out');

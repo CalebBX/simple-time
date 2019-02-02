@@ -71,7 +71,7 @@ class EmployeeList extends React.Component {
 
     getItems = () => {
         this.setState({ isLoading: true });
-        var config = { headers: { 'x-auth': sessionStorage.token } };
+        let config = { headers: { 'x-auth': sessionStorage.token } };
         api.get('/users', config).then(res => {
             this.setState({ users: res.data });
             console.log(res);

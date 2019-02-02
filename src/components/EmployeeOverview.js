@@ -26,6 +26,9 @@ import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import { withStyles } from '@material-ui/core/styles';
 
+import { DatePicker } from 'material-ui-pickers';
+import { MuiPickersUtilsProvider } from 'material-ui-pickers';
+import MomentUtils from '@date-io/moment';
 
 import TimeList from './TimeList.js'
 
@@ -33,21 +36,50 @@ class EmployeeOverview extends React.Component {
     state = {
         employee: {},
         time: [],
-        isLoading: false
+        showDateRange: false,
+        isLoading: false,
+        dateStart: new Date(),
+        dateEnd: new Date()
     };
     componentDidMount() {
         this.getEmployee();
         this.getTime();
     }
     render() {
-        var employee = this.state.employee;
+        let employee = this.state.employee;
         const { classes } = this.props
 
-
-
+        let dateRange;
+        if (this.state.showDateRange) {
+            dateRange = (
+                <div>
+                    <MuiPickersUtilsProvider utils={MomentUtils}>
+                        <DatePicker
+                            value={this.state.dateStart}
+                            onChange={date =>
+                                this.setState({
+                                    dateStart: date._d
+                                })}>
+                        </DatePicker>
+                        <DatePicker
+                            value={this.state.dateEnd}
+                            onChange={date =>
+                                this.setState({
+                                    dateEnd: date._d
+                                })}>
+                        </DatePicker>
+                    </MuiPickersUtilsProvider>
+                    <Button onClick={() =>
+                        this.getTime('range')
+                    }>Go</Button>
+                </div>
+            )
+        }
 
         return (
             <div>
+                <Button onClick={this.clockIn}>Clock In</Button>
+                <Button onClick={this.clockOut}>Clock Out</Button>
                 <Typography variant="h3">
                     {employee.nameFirst} {employee.nameLast}
                 </Typography>
@@ -55,34 +87,77 @@ class EmployeeOverview extends React.Component {
                     Email: {employee.email}
                 </Typography>
 
+                <div>
+                    <Button onClick={() =>
+                        this.setSort('today')
+                    }>Today</Button>
+                    <Button onClick={() =>
+                        this.setSort('range')
+                    }
+                    >Range</Button>
+                    <Button onClick={() =>
+                        this.setSort('all')
+                    }>All</Button>
+
+                </div>
+                {dateRange}
+
                 <TimeList time={this.state.time} />
             </div>
 
         );
     }
+    setSort(sort) {
+        if (sort === 'range') {
+            this.setState({ showDateRange: true });
+            return;
+        }
+        this.setState({ showDateRange: false });
+        this.getTime(sort);
+    }
     getEmployee = () => {
-        var config = { headers: { 'x-auth': sessionStorage.token } };
-        var id = this.props.match.params.id;
+        let config = { headers: { 'x-auth': sessionStorage.token } };
+        let id = this.props.match.params.id;
         api.get(`/users/${id}`, config).then(res => {
             this.setState({ employee: res.data });
         });
     };
-    getTime = () => {
-        var config = { headers: { 'x-auth': sessionStorage.token } };
-        var id = this.props.match.params.id;
-        api.get(`/time/${id}`, config).then(res => {
+    getTime = (sort) => {
+
+        console.log()
+        let dateStart;
+        let dateEnd;
+        switch (sort) {
+            case 'today':
+                dateStart = new Date()
+                dateStart.setHours(0, 0, 0)
+                dateEnd = new Date()
+                break;
+            case 'range':
+                dateStart = this.state.dateStart
+                dateStart.setHours(0, 0, 0)
+                dateEnd = this.state.dateEnd
+                dateEnd.setHours(23, 59, 59, 999)
+                break;
+            default:
+                break;
+        }
+        let config = { headers: { 'x-auth': sessionStorage.token } };
+        let id = this.props.match.params.id;
+        api.post(`/time/${id}`, { dateStart, dateEnd }, config).then(res => {
             this.setState({ time: res.data });
             console.log(res);
         });
     };
+
     clockIn = () => {
-        var config = { headers: { 'x-auth': sessionStorage.token } };
+        let config = { headers: { 'x-auth': sessionStorage.token } };
         api.post('/time/clockin', {}, config).then(res => {
             this.getTime();
         });
     };
     clockOut = () => {
-        var config = { headers: { 'x-auth': sessionStorage.token } };
+        let config = { headers: { 'x-auth': sessionStorage.token } };
         api.post('/time/clockout', {}, config).then(res => {
             this.getTime();
         });
@@ -98,6 +173,9 @@ const styles = theme => ({
         // maxWidth: 360,
         backgroundColor: theme.palette.background.paper,
     },
+    button: {
+        margin: theme.spacing.unit
+    }
 });
 
 export default withStyles(styles)(EmployeeOverview);

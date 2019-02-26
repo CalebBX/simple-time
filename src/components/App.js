@@ -7,6 +7,7 @@ import EmployeeOverview from './EmployeeOverview';
 import Login from './Login';
 import Signup from './Signup';
 import Placeholder from './PlaceholderContent'
+import Router from './Router'
 
 import AppBar from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
@@ -65,6 +66,10 @@ class App extends React.Component {
                 <div className={classes.toolbar} />
                 <Divider />
                 <List>
+                    <ListItem button component={Link} to="/time-clock" key="time-clock">
+                        <ListItemIcon><Icon>access_time</Icon></ListItemIcon>
+                        <ListItemText primary="Time Clock" />
+                    </ListItem>
                     <ListItem button component={Link} to="/employees" key="employees">
                         <ListItemIcon><Icon>people</Icon></ListItemIcon>
                         <ListItemText primary="Employees" />
@@ -122,15 +127,7 @@ class App extends React.Component {
 
                 <main className={classes.content}>
                     <div className={classes.toolbar} />
-                    <Route path="/employees" component={EmployeeList} />
-                    <Route
-                        path="/employee_overview/:id"
-                        component={EmployeeOverview}
-                    />
-                    {/* <Route path="/placeholder" component={PlaceholderContent} /> */}
-                    <Route path="/placeholder" component={Placeholder}>
-                    </Route>
-
+                    <Router />
                 </main>
             </div>
         );
